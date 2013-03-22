@@ -59,7 +59,7 @@ class Bot(object):
             summary1 = ""
             summary2 = ""
         else:
-            summary1 = "\n\n".join(['1. /u/{}'.format(i) for i in unbanned_count])
+            summary1 = "\n\n".join(['1. /u/{}'.format(i) for i in unbanned[1:]])
             summary2 = (
                 "  {} of them were shadowbanned or deleted and were removed from the list.  You now"
                 " have {} bans.".format(unbanned_count, bans_left))
