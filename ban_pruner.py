@@ -21,7 +21,7 @@ class Bot(object):
         '''Accepts moderator invites.'''
 
         for message in self.r.get_unread():
-            message.mark_read()
+            message.mark_as_read()
             # just assume every message in the inbox is a mod-invite
             try:
                 r.accept_mod_invites(message.subreddit.display_name)
