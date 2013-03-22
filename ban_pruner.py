@@ -24,7 +24,7 @@ class Bot(object):
             message.mark_as_read()
             # just assume every message in the inbox is a mod-invite
             try:
-                r.accept_moderator_invite(message.subreddit.display_name)
+                self.r.accept_moderator_invite(message.subreddit.display_name)
             except InvalidInvite:
                 pass
 
