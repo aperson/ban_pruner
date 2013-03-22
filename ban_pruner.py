@@ -60,6 +60,7 @@ class Bot(object):
         self.r.send_message(subreddit, 'Pruned Bans', message.format(summary, unbanned[0]))
 
     def run(self):
+        self.r.accept_mod_invites()
         for subreddit in self.r.get_my_moderation():
             if subreddit.display_name != self.r.user.name:
                 self.process_subreddit(subreddit)
