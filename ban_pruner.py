@@ -54,17 +54,15 @@ class Bot(object):
         bans_left = banned_count - unbanned_count
         message = (
             "I've just completed pruning your ban list, so here's a summary of what I've removed:"
-            "\n\n{}\n\n   Your subreddit had a total of {} bans.{}")
+            "\n\n{}\n\n   Your subreddit had a total of {} bans. {} of them were shadowbanned or "
+            "deleted and were removed from the list.  You now have {} bans.")
         if unbanned_count == 0:
-            summary1 = ""
-            summary2 = ""
+            summary = ""
         else:
-            summary1 = "\n\n".join(['1. /u/{}'.format(i) for i in unbanned[1:]])
-            summary2 = (
-                "  {} of them were shadowbanned or deleted and were removed from the list.  You now"
-                " have {} bans.".format(unbanned_count, bans_left))
+            summary = "\n\n".join(['1. /u/{}'.format(i) for i in unbanned[1:]])
         self.r.send_message(
-            subreddit, 'Pruned Bans', message.format(summary1, banned_count, summary2))
+            subreddit, 'Pruned Bans', message.format(
+                summary, banned_count, unbanned_count, bans_left))
 
     def run(self):
         self.accept_mod_invites()
