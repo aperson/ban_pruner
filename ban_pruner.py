@@ -52,7 +52,7 @@ class Bot(object):
 
         message = (
             "I've just completed pruning your ban list, so here's a summary of what I've removed:"
-            "\n\n{}\n\n   There were a total of {} shadowbanned or deleted users removed. ")
+            "\n\n{}\n\n   There was a total of {} shadowbanned or deleted users removed.")
         if unbanned[0] == 0:
             summary = ""
         else:
