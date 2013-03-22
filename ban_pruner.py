@@ -58,12 +58,11 @@ class Bot(object):
         else:
             summary = "\n\n".join(['{}. /u/{}'.format(*i) for i in enumerate(unbanned[1:])])
         self.r.send_message(subreddit, 'Pruned Bans', message.format(summary, unbanned[0]))
-        if subreddit.display_name != self.r.user.name:
-            subreddit.remove_moderator(self.r.user.name)
 
     def run(self):
         for subreddit in self.r.get_my_moderation():
-            self.process_subreddit(subreddit)
+            if subreddit.display_name != self.r.user.name:
+                self.process_subreddit(subreddit)
 
 if __name__ == '__main__':
     bot = Bot(USERNAME, PASSWORD)
