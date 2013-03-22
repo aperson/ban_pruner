@@ -49,21 +49,29 @@ class Bot(object):
         '''Processes the ban list and then messages the moderators the summary.'''
 
         unbanned = [i for i in self.prune_bans(subreddit)]
-
+        banned_count = unbanned[0]
+        unbanned_count = len(unbanned[1:])
+        bans_left = banned_count - unbanned_count
         message = (
             "I've just completed pruning your ban list, so here's a summary of what I've removed:"
-            "\n\n{}\n\n   There was a total of {} shadowbanned or deleted users removed.")
-        if unbanned[0] == 0:
-            summary = ""
+            "\n\n{}\n\n   Your subreddit had a total of {} bans.{}")
+        if unbanned_count == 0:
+            summary1 = ""
+            summary2 = ""
         else:
-            summary = "\n\n".join(['{}. /u/{}'.format(*i) for i in enumerate(unbanned[1:])])
-        self.r.send_message(subreddit, 'Pruned Bans', message.format(summary, unbanned[0]))
+            summary1 = "\n\n".join(['1. /u/{}'.format(i) for i in unbanned_count])
+            summary2 = (
+                "  {} of them were shadowbanned or deleted and were removed from the list.  You now"
+                " have {} bans.".format(unbanned_count, bans_left))
+        self.r.send_message(
+            subreddit, 'Pruned Bans', message.format(summary1, banned_count, summary2))
 
     def run(self):
         self.accept_mod_invites()
         for subreddit in self.r.get_my_moderation():
             if subreddit.display_name != self.r.user.name:
                 self.process_subreddit(subreddit)
+                subreddit.remove_moderator(self.r.user.name)
 
 if __name__ == '__main__':
     bot = Bot(USERNAME, PASSWORD)
