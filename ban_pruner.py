@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import praw
+import requests
 
 
 try:
@@ -37,11 +38,12 @@ class Bot(object):
                 subreddit.unban(user)
                 output.append(user.name)
             else:
-                u = praw.requests.get('http://reddit.com/u/{}'.format(user.name))
+                u = requests.get('http://reddit.com/u/{}'.format(user.name))
                 if u.status_code == 404:
                     subreddit.remove_ban(user.name)
                     self.unbanned.append(user.name)
                     output.append(user.name)
+                u.close()
         return output
 
     def process_subreddit(self, subreddit):
