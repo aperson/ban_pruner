@@ -32,18 +32,19 @@ class Bot(object):
         '''Generator function that returns names of unbanned users.  The first returned value is
         the intial number of bans.'''
         banned = [i for i in subreddit.get_banned()]
-        yield len(banned)
+        output = [len(banned)]
         for user in banned:
             if user.name in self.unbanned:
                 subreddit.unban(user)
-                yield user.name
+                output.append(user.name)
             else:
                 try:
                     user.get_overview().__next__()
                 except requests.exceptions.HTTPError:
                     subreddit.remove_ban(user.name)
                     self.unbanned.append(user.name)
-                    yield user.name
+                    output.append(user.name)
+        return output
 
     def process_subreddit(self, subreddit):
         '''Processes the ban list and then messages the moderators the summary.'''
