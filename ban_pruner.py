@@ -25,7 +25,7 @@ class Bot(object):
             # just assume every message in the inbox is a mod-invite
             try:
                 self.r.accept_moderator_invite(message.subreddit.display_name)
-            except InvalidInvite:
+            except praw.errors.InvalidInvite:
                 pass
 
     def prune_bans(self, subreddit):
