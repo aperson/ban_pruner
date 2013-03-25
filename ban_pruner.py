@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import praw
-import requests  # Needed to catch requests.exceptions.HTTPError
 
 
 try:
@@ -38,9 +37,8 @@ class Bot(object):
                 subreddit.unban(user)
                 output.append(user.name)
             else:
-                try:
-                    user.get_overview().__next__()
-                except requests.exceptions.HTTPError:
+                u = praw.requests.get('http://reddit.com/u/{}'.format(user.name))
+                if u.status_code == 404:
                     subreddit.remove_ban(user.name)
                     self.unbanned.append(user.name)
                     output.append(user.name)
