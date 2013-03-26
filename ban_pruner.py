@@ -29,7 +29,7 @@ class Bot(object):
                 pass
 
     def prune_bans(self, subreddit):
-        '''Generator function that returns names of unbanned users.  The first returned value is
+        '''Function that returns names of unbanned users.  The first returned value is
         the intial number of bans.'''
         banned = [i for i in subreddit.get_banned()]
         output = [len(banned)]
@@ -43,7 +43,6 @@ class Bot(object):
                     subreddit.remove_ban(user.name)
                     self.unbanned.append(user.name)
                     output.append(user.name)
-                u.close()
         return output
 
     def process_subreddit(self, subreddit):
