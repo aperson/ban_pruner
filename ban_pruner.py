@@ -9,7 +9,7 @@ try:
 except:
     USERNAME = 'someuser'
     PASSWORD = 'somepass'
-    CACHE = '/path/to/cache.file'
+    CACHEFILE = '/path/to/cache.file'
 
 
 class Bot(object):
@@ -20,17 +20,21 @@ class Bot(object):
 
     def get_ban_list(self):
         '''Retrieves the unbanned from CACHE..'''
-
-        with open(CACHEFILE) as f:
-            for line in f:
-                unbanned.add(line.strip())
-            return unbanned
+        unbanned = set()
+        try:
+            with open(CACHEFILE) as f:
+                for line in f:
+                    if line:
+                        unbanned.add(line.strip())
+        except IOError:
+            pass
+        return unbanned
 
     def set_ban_list(self):
         '''Writes unbanned to CACHE.'''
 
         with open(CACHEFILE, 'w') as f:
-            f.write('\n'.join(self.unbanned))
+            f.write('\n'.join(self.unbanned) + '\n')
 
     def accept_mod_invites(self):
         '''Accepts moderator invites.'''
