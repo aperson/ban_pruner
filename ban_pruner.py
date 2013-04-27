@@ -74,8 +74,8 @@ class Bot(object):
         message = (
             "I've just completed pruning your ban list, so here's a summary of what I've removed:"
             "\n\n{}\n\n   Your subreddit had a total of {} bans. {} of them were shadowbanned or "
-            "deleted and were removed from the list.  You now have {} bans.  I have now remvoved "
-            "myself from your moderator list.  Feel free to re-add me at any time.")
+            "deleted and were removed from the list.  You now have {} bans.  I have now removed m"
+            "yself from your moderator list.  Feel free to re-add me at any time.")
         if unbanned_count == 0:
             summary = ""
         else:
