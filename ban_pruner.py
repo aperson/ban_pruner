@@ -20,21 +20,18 @@ class Bot(object):
 
     def get_ban_list(self):
         '''Retrieves the unbanned from CACHE..'''
-        unbanned = set()
         try:
             with open(CACHEFILE) as f:
-                for line in f:
-                    if line:
-                        unbanned.add(line.strip())
+                unbanned = set(json.loads(f.read()))
         except IOError:
-            pass
+            unbanned = set()
         return unbanned
 
     def set_ban_list(self):
         '''Writes unbanned to CACHE.'''
 
         with open(CACHEFILE, 'w') as f:
-            f.write('\n'.join(self.unbanned) + '\n')
+            f.write(json.dumps(list(self.unbanned)))
 
     def accept_mod_invites(self):
         '''Accepts moderator invites.'''
