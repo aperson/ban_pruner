@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import praw
 import requests
 
@@ -23,7 +24,7 @@ class Bot(object):
         try:
             with open(CACHEFILE) as f:
                 unbanned = set(json.loads(f.read()))
-        except IOError:
+        except (IOError, ValueError):
             unbanned = set()
         return unbanned
 
