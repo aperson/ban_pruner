@@ -17,7 +17,8 @@ class Bot(object):
     def __init__(self, username, password):
         self.r = praw.Reddit('/u/{} running ban_pruner.py'.format(USERNAME))
         self.r.login(username, password)
-        self.unbanned = self.get_ban_list()  # internal list of people already unbanned
+        self.banned = set()  # list of accounts who are staying banned
+        self.unbanned = self.get_ban_list()  # list of accounts already unbanned
 
     def get_ban_list(self):
         '''Retrieves the unbanned from CACHE..'''
@@ -51,7 +52,7 @@ class Bot(object):
         banned = [i for i in subreddit.get_banned()]
         output = [len(banned)]
         for user in banned:
-            if user.name in self.unbanned:
+            if user.name in self.unbanned and user.name not in self.banned:
                 subreddit.unban(user)
                 output.append(user.name)
             else:
@@ -60,6 +61,8 @@ class Bot(object):
                     subreddit.remove_ban(user.name)
                     self.unbanned.add(user.name)
                     output.append(user.name)
+                else:
+                    self.banned.add(user.name)
         return output
 
     def process_subreddit(self, subreddit):
@@ -73,7 +76,9 @@ class Bot(object):
             "I've just completed pruning your ban list, so here's a summary of what I've removed:"
             "\n\n{}\n\n   Your subreddit had a total of {} bans. {} of them were shadowbanned or "
             "deleted and were removed from the list.  You now have {} bans.  I have now removed m"
-            "yself from your moderator list.  Feel free to re-add me at any time.")
+            "yself from your moderator list.  Feel free to re-add me at any time.  If you're sati"
+            "fied with the job I've done, please consider leaving feedback at /r/ban_pruner/w/fee"
+            "dback.")
         if unbanned_count == 0:
             summary = ""
         else:
