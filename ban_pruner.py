@@ -80,7 +80,7 @@ class Bot(object):
             "fied with the job I've done, please consider leaving feedback at /r/ban_pruner/w/fee"
             "dback.")
         if unbanned_count == 0:
-            summary = ""
+            summary = "* There were no deleted or shadowbanned users removed."
         else:
             summary = "\n\n".join(['1. /u/{}'.format(i) for i in unbanned[1:]])
         self.r.send_message(
