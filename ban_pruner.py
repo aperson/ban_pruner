@@ -22,6 +22,7 @@ class Bot(object):
 
     def get_ban_list(self):
         '''Retrieves the unbanned from CACHEFILE.'''
+
         try:
             with open(CACHEFILE) as f:
                 unbanned = set(json.loads(f.read()))
