@@ -21,7 +21,7 @@ class Bot(object):
         self.unbanned = self.get_ban_list()  # list of accounts already unbanned
 
     def get_ban_list(self):
-        '''Retrieves the unbanned from CACHE..'''
+        '''Retrieves the unbanned from CACHEFILE.'''
         try:
             with open(CACHEFILE) as f:
                 unbanned = set(json.loads(f.read()))
@@ -30,7 +30,7 @@ class Bot(object):
         return unbanned
 
     def set_ban_list(self):
-        '''Writes unbanned to CACHE.'''
+        '''Writes unbanned to CACHEFILE.'''
 
         with open(CACHEFILE, 'w') as f:
             f.write(json.dumps(list(self.unbanned)))
@@ -47,6 +47,7 @@ class Bot(object):
                 pass
 
     def prune_bans(self, subreddit):
+
         '''Function that returns names of unbanned users.  The first returned value is
         the intial number of bans.'''
         banned = [i for i in subreddit.get_banned()]
