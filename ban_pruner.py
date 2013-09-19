@@ -15,7 +15,9 @@ except:
 
 class Bot(object):
     def __init__(self, username, password):
-        self.r = praw.Reddit('/u/{} running ban_pruner.py'.format(USERNAME))
+        user_agent = '/u/{} running ban_pruner.py'.format(USERNAME)
+        self.headers = {'User-Agent': user_agent}
+        self.r = praw.Reddit(user_agent)
         self.r.login(username, password)
         self.banned = set()  # list of accounts who are staying banned
         self.unbanned = self.get_ban_list()  # list of accounts already unbanned
@@ -48,32 +50,32 @@ class Bot(object):
                 pass
 
     def prune_bans(self, subreddit):
-
         '''Function that returns names of unbanned users.  The first returned value is
         the intial number of bans.'''
+
         banned = [i for i in subreddit.get_banned()]
-        output = [len(banned)]
+        unbanned = []
         for user in banned:
             if user.name in self.unbanned and user.name not in self.banned:
                 subreddit.unban(user)
-                output.append(user.name)
+                unbanned.append(user.name)
             else:
-                u = requests.get('http://reddit.com/u/{}'.format(user.name))
+                u = requests.get(
+                    'http://reddit.com/user/{}/?limit=1'.format(user.name), headers=self.headers)
                 if u.status_code == 404:
                     subreddit.remove_ban(user.name)
                     self.unbanned.add(user.name)
-                    output.append(user.name)
+                    unbanned.append(user.name)
                 else:
                     self.banned.add(user.name)
-        return output
+        return len(banned), unbanned
 
     def process_subreddit(self, subreddit):
         '''Processes the ban list and then messages the moderators the summary.'''
 
-        unbanned = [i for i in self.prune_bans(subreddit)]
-        banned_count = unbanned[0]
-        unbanned_count = len(unbanned[1:])
-        bans_left = banned_count - unbanned_count
+        original_ban_count, unbanned = self.prune_bans(subreddit)
+        unbanned_count = len(unbanned)
+        bans_left = original_ban_count - unbanned_count
         message = (
             "I've just completed pruning your ban list, so here's a summary of what I've removed:"
             "\n\n{}\n\n   Your subreddit had a total of {} bans. {} of them were shadowbanned or "
@@ -84,10 +86,10 @@ class Bot(object):
         if unbanned_count == 0:
             summary = "* There were no deleted or shadowbanned users removed."
         else:
-            summary = "\n\n".join(['1. /u/{}'.format(i) for i in unbanned[1:]])
+            summary = "\n\n".join(['1. /u/{}'.format(i) for i in unbanned])
         self.r.send_message(
             subreddit, 'Pruned Bans', message.format(
-                summary, banned_count, unbanned_count, bans_left))
+                summary, original_ban_count, unbanned_count, bans_left))
 
     def run(self):
         self.accept_mod_invites()
