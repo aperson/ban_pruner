@@ -68,6 +68,7 @@ class Bot(object):
                     unbanned.append(user.name)
                 else:
                     self.banned.add(user.name)
+            time.sleep(2)
         return len(banned), unbanned
 
     def process_subreddit(self, subreddit):
