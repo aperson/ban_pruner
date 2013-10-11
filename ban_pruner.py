@@ -56,7 +56,7 @@ class Bot(object):
         try:
             time.sleep(self.sleep_time)
             u = requests.get(
-                'http://reddit.com/user/{}/?limit=1'.format(user.name), headers=self.headers)
+                'http://reddit.com/user/{}/?limit=1'.format(user), headers=self.headers)
         except requests.exceptions.ConnectionError:
             self.sleep_time += 2
             self.is_shadowbanned(user)
@@ -78,7 +78,7 @@ class Bot(object):
                 subreddit.unban(user)
                 unbanned.append(user.name)
             else:
-                if self.is_shadowbanned(user.name):
+                if self.is_shadowbanned(user):
                     subreddit.remove_ban(user.name)
                     self.unbanned.add(user.name)
                     unbanned.append(user.name)
