@@ -57,14 +57,12 @@ class Bot(object):
             time.sleep(self.sleep_time)
             u = requests.get(
                 'http://reddit.com/user/{}/?limit=1'.format(user), headers=self.headers)
+            if u.status_code == 404:
+                self.sleep_time = 2
+                return True
         except requests.exceptions.ConnectionError:
             self.sleep_time += 2
             self.is_shadowbanned(user)
-        if u.status_code == 404:
-            self.sleep_time = 2
-            return True
-        else:
-            return False
 
     def prune_bans(self, subreddit):
         '''Function that returns names of unbanned users.  The first returned value is
