@@ -22,6 +22,7 @@ class Bot(object):
         self.r.login(username, password)
         self.banned = set()  # list of accounts who are staying banned
         self.unbanned = self.get_ban_list()  # list of accounts already unbanned
+        self.sleep_time = 2
 
     def get_ban_list(self):
         '''Retrieves the unbanned from CACHEFILE.'''
@@ -50,6 +51,20 @@ class Bot(object):
             except praw.errors.InvalidInvite:
                 pass
 
+    def is_shadowbanned(self, username):
+        try:
+            time.sleep(self.sleep_time)
+            u = requests.get(
+                'http://reddit.com/user/{}/?limit=1'.format(user.name), headers=self.headers)
+        except requests.exceptions.ConnectionError:
+            self.sleep_time += 2
+            self.is_shadowbanned(username)
+        if u.status_code == 404:
+            self.sleep_time = 2
+            return True
+        else:
+            return False
+
     def prune_bans(self, subreddit):
         '''Function that returns names of unbanned users.  The first returned value is
         the intial number of bans.'''
@@ -61,15 +76,12 @@ class Bot(object):
                 subreddit.unban(user)
                 unbanned.append(user.name)
             else:
-                u = requests.get(
-                    'http://reddit.com/user/{}/?limit=1'.format(user.name), headers=self.headers)
-                if u.status_code == 404:
+                if self.is_shadowbanned(user.name):
                     subreddit.remove_ban(user.name)
                     self.unbanned.add(user.name)
                     unbanned.append(user.name)
                 else:
                     self.banned.add(user.name)
-            time.sleep(2)
         return len(banned), unbanned
 
     def process_subreddit(self, subreddit):
