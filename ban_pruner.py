@@ -51,14 +51,15 @@ class Bot(object):
             except praw.errors.InvalidInvite:
                 pass
 
-    def is_shadowbanned(self, username):
+    def is_shadowbanned(self, user):
+        print("Checking if /u/{} is shadowbanned or deleted".format(user.name))
         try:
             time.sleep(self.sleep_time)
             u = requests.get(
                 'http://reddit.com/user/{}/?limit=1'.format(user.name), headers=self.headers)
         except requests.exceptions.ConnectionError:
             self.sleep_time += 2
-            self.is_shadowbanned(username)
+            self.is_shadowbanned(user)
         if u.status_code == 404:
             self.sleep_time = 2
             return True
@@ -69,6 +70,7 @@ class Bot(object):
         '''Function that returns names of unbanned users.  The first returned value is
         the intial number of bans.'''
 
+        print("Processing the bans in: {}".format(subreddit.display_name))
         banned = [i for i in subreddit.get_banned()]
         unbanned = []
         for user in banned:
