@@ -2,6 +2,7 @@
 
 import json
 import praw
+from praw.handlers import MultiprocessHandler
 import requests
 import time
 
@@ -18,7 +19,7 @@ class Bot(object):
     def __init__(self, username, password):
         user_agent = '/u/{} running ban_pruner.py'.format(USERNAME)
         self.headers = {'User-Agent': user_agent}
-        self.r = praw.Reddit(user_agent)
+        self.r = praw.Reddit(user_agent, handler=MultiprocessHandler())
         self.r.login(username, password)
         self.banned = set()  # list of accounts who are staying banned
         self.unbanned = self.get_ban_list()  # list of accounts already unbanned
