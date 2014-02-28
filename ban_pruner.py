@@ -43,7 +43,7 @@ class Bot(object):
     def accept_mod_invites(self):
         '''Accepts moderator invites.'''
 
-        for message in self.r.get_unread():
+        for message in self.r.get_unread(limit=None):
             message.mark_as_read()
             # just assume every message in the inbox is a mod-invite
             try:
@@ -69,7 +69,7 @@ class Bot(object):
         the intial number of bans.'''
 
         print("Processing the bans in: {}".format(subreddit.display_name))
-        banned = [i for i in subreddit.get_banned()]
+        banned = [i for i in subreddit.get_banned(limit=None)]
         unbanned = []
         for user in banned:
             if user.name in self.unbanned and user.name not in self.banned:
