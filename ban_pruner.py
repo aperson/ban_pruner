@@ -46,7 +46,7 @@ class Bot(object):
     def write_summary_to_disk(self, path, filename, summary):
         '''Writes summaries to disk.  Creates folders when needed.'''
 
-        full_path = '{}/{}'.foramt(BASEDIR, path)
+        full_path = '{}/{}'.format(BASEDIR, path)
         if not os.path.exists(path):
             os.makedirs(path)
         with open('{}/{}'.format(full_path, filename), 'w') as f:
