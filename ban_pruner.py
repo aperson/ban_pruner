@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import os
 import praw
 from praw.handlers import MultiprocessHandler
 import requests
@@ -12,7 +13,8 @@ try:
 except:
     USERNAME = 'someuser'
     PASSWORD = 'somepass'
-    CACHEFILE = '/path/to/cache.file'
+    BASEDIR = '/some/path/'
+    CACHEFILE = '{}/cache.file'.format(BASEDIR)
 
 
 class Bot(object):
@@ -40,6 +42,15 @@ class Bot(object):
 
         with open(CACHEFILE, 'w') as f:
             f.write(json.dumps(list(self.unbanned)))
+
+    def write_summary_to_disk(self, path, filename, summary):
+        '''Writes summaries to disk.  Creates folders when needed.'''
+
+        full_path = '{}/{}'.foramt(BASEDIR, path)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        with open('{}/{}'.format(full_path, filename), 'w') as f:
+            f.write(summary)
 
     def accept_mod_invites(self):
         '''Accepts moderator invites.'''
@@ -100,6 +111,15 @@ class Bot(object):
             "dback.")
         if unbanned_count == 0:
             summary = "* There were no deleted or shadowbanned users removed."
+        elif unbanned_count > 200:
+            current_time = time.strftime('%Y%m%d')
+            path = 'summaries/{}'.format(subreddit.display_name)
+            wiki_page = '{}/{}'.format(path, current_time)
+            wiki_content = "\n\n".join(['* /u/{}'.format(i) for i in unbanned])
+            self.write_summary_to_disk(path, current_time, wiki_content)
+            self.r.edit_wiki_page(self.r.user.name, wiki_page, wiki_content)
+            summary = "* Full summary can be found at /r/{}/w/{}".format(
+                self.r.user.name, wiki_page)
         else:
             summary = "\n\n".join(['1. /u/{}'.format(i) for i in unbanned])
         self.r.send_message(
