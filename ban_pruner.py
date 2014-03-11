@@ -76,7 +76,7 @@ class Bot(object):
             self.sleep_time += 2
             self.is_shadowbanned(user)
 
-    def remove_ban(subreddit, user, tries=0):
+    def remove_ban(self, subreddit, user, tries=0):
         tries = tries
         tries += 1
         if tries <= 5:
