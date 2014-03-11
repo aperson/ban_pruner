@@ -76,6 +76,15 @@ class Bot(object):
             self.sleep_time += 2
             self.is_shadowbanned(user)
 
+    def remove_ban(subreddit, user, tries=0):
+        tries = tries
+        tries += 1
+        if tries <= 5:
+            try:
+                subreddit.remove_ban(user)
+            except requests.exceptions.HTTPError:
+                remove_ban(subreddit, user, tries=tries)
+
     def prune_bans(self, subreddit):
         '''Function that returns names of unbanned users.  The first returned value is
         the intial number of bans.'''
@@ -85,7 +94,7 @@ class Bot(object):
         unbanned = []
         for user in banned:
             if user.name in self.unbanned and user.name not in self.banned:
-                subreddit.remove_ban(user)
+                remove_ban(subreddit, user)
                 unbanned.append(user.name)
             else:
                 if self.is_shadowbanned(user):
