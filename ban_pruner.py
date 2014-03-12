@@ -94,7 +94,7 @@ class Bot(object):
         unbanned = []
         for user in banned:
             if user.name in self.unbanned and user.name not in self.banned:
-                remove_ban(subreddit, user)
+                self.remove_ban(subreddit, user)
                 unbanned.append(user.name)
             else:
                 if self.is_shadowbanned(user):
