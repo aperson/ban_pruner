@@ -95,7 +95,7 @@ class Bot(object):
                 unbanned.append(user.name)
             else:
                 if self.is_shadowbanned(user):
-                    subreddit.remove_ban(user.name)
+                    self.remove_ban(user.name)
                     self.unbanned.add(user.name)
                     unbanned.append(user.name)
                 else:
