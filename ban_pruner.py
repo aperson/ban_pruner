@@ -19,7 +19,7 @@ except:
 
 class Bot(object):
     def __init__(self, username, password):
-        user_agent = '/u/{} running ban_pruner.py'.format(USERNAME)
+        user_agent = '/u/{} running ban_pruner.py'.format(username)
         self.headers = {'User-Agent': user_agent}
         self.r = praw.Reddit(user_agent, handler=MultiprocessHandler())
         self.r.login(username, password)
