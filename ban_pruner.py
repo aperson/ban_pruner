@@ -113,8 +113,8 @@ class Bot(object):
             "\n\n{}\n\n   Your subreddit had a total of {} bans. {} of them were shadowbanned or "
             "deleted and were removed from the list.  You now have {} bans.  I have now removed m"
             "yself from your moderator list.  Feel free to re-add me at any time.  If you're sati"
-            "fied with the job I've done, please consider leaving feedback at /r/ban_pruner/w/fee"
-            "dback.")
+            "sfied with the job I've done, please consider leaving feedback at /r/ban_pruner/w/fe"
+            "edback.")
         if unbanned_count == 0:
             summary = "* There were no deleted or shadowbanned users removed."
         elif unbanned_count > 200:
