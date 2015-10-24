@@ -22,7 +22,7 @@ class Bot(object):
         user_agent = '/u/{} running ban_pruner.py'.format(username)
         self.headers = {'User-Agent': user_agent}
         self.r = praw.Reddit(user_agent, handler=MultiprocessHandler())
-        self.r.login(username, password)
+        self.r.login(username, password, disable_warning=True)
         self.banned = set()  # list of accounts who are staying banned
         self.unbanned = self.get_ban_list()  # list of accounts already unbanned
         self.sleep_time = 2
